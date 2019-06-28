@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 // Configuration.
 // MaNGOSD IP.
@@ -12,7 +12,7 @@ $user = "mangos";
 // MySQL Password.
 $pass = "mangos";
 // Realm database.
-$r_db = "realmd";
+$r_db = "realmd0";
 // Character database.
 $c_db = "characters";
 // Images directory.
@@ -97,20 +97,21 @@ $def = Array(
 $user_chars = "#[^a-zA-Z0-9_\-]#";
 $email_chars = "/^[^0-9][A-z0-9_]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_]+)*[.][A-z]{2,4}$/";
 
-$result = "";
+$result;
 $realmname;
 $realmstatus = "<FONT COLOR=yellow>Unknown</FONT>";
 $uptime = "N/A";
 $accounts = "N/A";
 $totalchars = "N/A";
-$now = date("H:i:s");
+$now = date("H:i:s T");
 //$con = @mysql_connect($ip, $user, $pass);
-$con = new PDO("mysql:host=127.0.0.1", "mangos", "mangos");
+$dbh = new PDO("mysql:host=127.0.0.1;dbname=characters", "mangos", "mangos");
+$dbh1 = new PDO("mysql:host=127.0.0.1;dbname=realmd", "mangos", "mangos");
     
 function make_players_array(){
-	global $con, $c_db, $pl_array, $maps_a;
+	global $dbh, $c_db, $pl_array, $maps_a;
     $i=0;
-	$query = $con->query("SELECT * FROM $c_db.characters WHERE `online`='1' ORDER BY `name`");
+	$query = $dbh->query("SELECT * FROM characters WHERE online=1 order by name");
 	while($result = $query->fetch(PDO::FETCH_BOTH))
 	{
 		$char_data = ($result['level']);
@@ -131,12 +132,12 @@ function make_players_array(){
     return $i;
 }
 
-if (!$con) {
+if (!$dbh1) {
 	$result = "> Unable to connect to database: " . mysql_error();
 }
 else
 {
-    $qry = $con->query("select address from $r_db.realmlist where id = 1");
+    $qry = $dbh1->query("select address from realmlist where id = 1");
     if ($qry)
     {
         while ($row = $qry->fetch(PDO::FETCH_BOTH))
@@ -146,7 +147,7 @@ else
     };
     
     unset($qry);
-    $qry = $con->query("select name from $r_db.realmlist where id = 1");
+    $qry =$dbh1->query("select name from realmlist where id = 1");
     if ($qry)
     {
         while ($row = $qry->fetch(PDO::FETCH_BOTH))
@@ -155,18 +156,19 @@ else
         }
     };
 
-    if (! $sock = @fsockopen($realmip, $realmport, $num, $error, 3))
+//    if (! $sock = @fsockopen($realmip, $realmport, $num, $error, 3))
+    if (! `netstat -an|grep 8085 |wc -l`)
     {
         $realmstatus = "<FONT COLOR=red>Offline</FONT>";
     }
     else
     { 
         $realmstatus = "<FONT COLOR=green>Online</FONT>"; 
-        fclose($sock);
+//        fclose($sock);
     };
     
     unset($qry);
-    $qry = $con->query("SELECT * FROM $r_db.uptime ORDER BY `starttime` DESC LIMIT 1");
+    $qry = $dbh1->query("SELECT * FROM uptime ORDER BY `starttime` DESC LIMIT 1");
     if ($qry)
     {
         $uptime_results = $qry->fetch(PDO::FETCH_BOTH);    
@@ -184,7 +186,7 @@ else
     };
     
     unset($qry);
-    $qry = $con->query("select Count(id) from $r_db.account");
+    $qry = $dbh1->query("select Count(id) from account");
     if ($qry)
     {
         while ($row = $qry->fetch(PDO::FETCH_BOTH))
@@ -194,7 +196,7 @@ else
     };
     
     unset($qry);
-    $qry = $con->query("select Count(guid) from $c_db.characters");
+    $qry = $dbh->query("select Count(guid) from characters");
     if ($qry)
     {
         while ($row = $qry->fetch(PDO::FETCH_BOTH))
@@ -354,10 +356,10 @@ body {
     width: -o-calc(100% - 175px); /* opera */
     width: -webkit-calc(100% - 175px); /* google, safari */
     width: -moz-calc(100% - 175px); /* firefox */
-    height: calc(100vh - 30px);
-    height: -o-calc(100vh - 30px); /* opera */
-    height: -webkit-calc(100vh - 30px); /* google, safari */
-    height: -moz-calc(100vh - 30px); /* firefox */
+    height: calc($onlineplayers+100vh - 30px);
+    height: -o-calc($onlineplayers+100vh - 30px); /* opera */
+    height: -webkit-calc($onlineplayers+100vh - 30px); /* google, safari */
+    height: -moz-calc($onlineplayers+100vh - 30px); /* firefox */
     float:left;
     padding-left:175px;		 
 }
@@ -388,18 +390,18 @@ body {
 <body>
 
 <div id="header">
-<h1>Vanilla Repack</h1>
+<h1>Light's Hope Repack</h1>
 </div>
 <div id="wrapper">
 <div id="nav">
-<a href="http://www.youtube.com/brotalnia" style="text-decoration:none"><img src="images/youtube.png" alt="[1]" width="16" height="16"> My Channel</a><br>
+<!--a href="http://www.youtube.com/brotalnia" style="text-decoration:none"><img src="images/youtube.png" alt="[1]" width="16" height="16"> My Channel</a--!><br>
 <hr>
 <a href="index.php" style="text-decoration:none"><img src="images/mangos.png" alt="[2]" width="16" height="16"> Registration</a><br>
 <a href="info.php" style="text-decoration:none"><img src="images/lfg.png" alt="[3]" width="16" height="16"> Information</a><br>
 <hr>
-<div align="center">
+<!--div align="center">
 <a href="http://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-emulator-servers/wow-emu-general-releases/613280-elysium-core-1-12-repack-including-mmaps-optional-vendors.html" style="text-decoration:none"><img src="images/ocbanner.png" alt="OwnedCore" width="88" height="31"></a><br>
-</div>
+</div--!>
 </div>
 <div id="section">
 <h2>Realm: <?php if(isset($realmname)){ echo $realmname; } else { echo "Lightbringer";} ?></h2>
@@ -429,9 +431,9 @@ Total Characters: <?php echo $totalchars; ?>
 	</table>
 </div>
 </div>
-<div id="footer">
+<!--div id="footer">
 Subscribe to my channel on <a href="http://www.youtube.com/brotalnia" style="color:#FF0000">Youtube</a>
-</div>
+</div--!>
 </div>
 </body>
 </html>

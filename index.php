@@ -1,8 +1,8 @@
-<?php
+﻿<?php
 
 // Configuration.
 // Realm database.
-$r_db = "realmd";
+$r_db = "realmd0";
 // IP (and port).
 $ip = "127.0.0.1:3306";
 // Username.
@@ -15,16 +15,17 @@ $pass = "mangos";
 $user_chars = "#[^a-zA-Z0-9_\-]#";
 $email_chars = "/^[^0-9][A-z0-9_]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_]+)*[.][A-z]{2,4}$/";
 
-$result = "";
-$realmip = "";
+$result;
+$realmip;
 //$con = @mysql_connect($ip, $user, $pass);
-$con = new PDO("mysql:host=127.0.0.1", "mangos", "mangos");
-if (!$con) {
+$dbh = new PDO("mysql:host=127.0.0.1;dbname=realmd", "mangos", "mangos");
+if (!$dbh) {
 	$result = "> Unable to connect to database: " . mysql_error();
 }
 else
 {
-    $qry = $con->query("select address from $r_db.realmlist where id = 1");
+//    $qry = @mysql_query("select address from " . mysql_real_escape_string($r_db) . ".realmlist where id = 1", $con);
+    $qry = $dbh->query("select address from realmlist where id = 1");
     if ($qry)
     {
         while ($row = $qry->fetch(PDO::FETCH_BOTH))
@@ -75,17 +76,17 @@ else
             };
             if (strlen($result) < 1)
             {
-//                $username = mysql_real_escape_string($username);
-//                $password = mysql_real_escape_string($password);
-//                $email = mysql_real_escape_string($email);
+                $username = mysql_real_escape_string($username);
+                $password = mysql_real_escape_string($password);
+                $email = mysql_real_escape_string($email);
                 unset($qry);
-                $qry = $con->query("select username from $r_db.account where username = '" . $username . "'");
+                $qry = @mysql_query("select username from " . mysql_real_escape_string($r_db) . ".account where username = '" . $username . "'", $con);
                 if (!$qry) {
                     $result = "> Error querying database: " . mysql_error();
                 }
                 else
                 {
-                    if ($existing_username = $qry->fetch(PDO::FETCH_BOTH)) {
+                    if ($existing_username = mysql_fetch_assoc($qry)) {
                         foreach ($existing_username as $key => $value) {
                             $existing_username = $value;
                         };
@@ -97,13 +98,13 @@ else
                     else
                     {
                         unset($qry);
-                        $qry = $con->query("select email from $r_db.account where email = '" . $email . "'");
+                        $qry = @mysql_query("select email from " . mysql_real_escape_string($r_db) . ".account where email = '" . $email . "'", $con);
                         if (!$qry) {
                             $result = "> Error querying database: " . mysql_error();
                         }
                         else
                         {
-                            if ($existing_email = $qry->fetch(PDO::FETCH_BOTH)) {
+                            if ($existing_email = mysql_fetch_assoc($qry)) {
                                 foreach ($existing_email as $key => $value) {
                                     $existing_email = $value;
                                 };
@@ -115,8 +116,8 @@ else
                             {
                                 unset($qry);
                                 $sha_pass_hash = sha1(strtoupper($username) . ":" . strtoupper($password));
-                                $register_sql = "insert into $r_db.account (username, sha_pass_hash, email) values (upper('" . $username . "'),'" . $sha_pass_hash . "','" . $email . "')";
-                                $qry = $con->query($register_sql);
+                                $register_sql = "insert into " . mysql_real_escape_string($r_db) . ".account (username, sha_pass_hash, email) values (upper('" . $username . "'),'" . $sha_pass_hash . "','" . $email . "')";
+                                $qry = @mysql_query($register_sql, $con);
                                 if (!$qry) {
                                     $result = "> Error creating account: " . mysql_error();
                                 }
@@ -418,18 +419,18 @@ body {
 <body>
 
 <div id="header">
-<h1>Vanilla Repack</h1>
+<h1>Light's Hope Repack</h1>
 </div>
 <div id="wrapper">
 <div id="nav">
-<a href="http://www.youtube.com/brotalnia" style="text-decoration:none"><img src="images/youtube.png" alt="[1]" width="16" height="16"> My Channel</a><br>
+<!--a href="http://www.youtube.com/brotalnia" style="text-decoration:none"><img src="images/youtube.png" alt="[1]" width="16" height="16"> My Channel</a--!><br>
 <hr>
 <a href="index.php" style="text-decoration:none"><img src="images/mangos.png" alt="[2]" width="16" height="16"> Registration</a><br>
 <a href="info.php" style="text-decoration:none"><img src="images/lfg.png" alt="[3]" width="16" height="16"> Information</a><br>
 <hr>
-<div align="center">
+<!--div align="center">
 <a href="http://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-emulator-servers/wow-emu-general-releases/613280-elysium-core-1-12-repack-including-mmaps-optional-vendors.html" style="text-decoration:none"><img src="images/ocbanner.png" alt="OwnedCore" width="88" height="31"></a><br>
-</div>
+</div--!>
 </div>
 <div id="section">
 
