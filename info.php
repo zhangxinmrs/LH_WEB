@@ -6,13 +6,13 @@ $realmip = "127.0.0.1";
 // MaNGOSD port.
 $realmport = "8085";
 // MySQL IP (and port).
-$ip = "127.0.0.1:3306";
+$ip = "127.0.0.1";
 // MySQL Username.
 $user = "mangos";
 // MySQL Password.
 $pass = "mangos";
 // Realm database.
-$r_db = "realmd0";
+$r_db = "realmd";
 // Character database.
 $c_db = "characters";
 // Images directory.
@@ -105,8 +105,8 @@ $accounts = "N/A";
 $totalchars = "N/A";
 $now = date("H:i:s T");
 //$con = @mysql_connect($ip, $user, $pass);
-$dbh = new PDO("mysql:host=127.0.0.1;dbname=characters", "mangos", "mangos");
-$dbh1 = new PDO("mysql:host=127.0.0.1;dbname=realmd", "mangos", "mangos");
+$dbh = new PDO("mysql:host=$ip;dbname=$c_db", "$user", "$pass");
+$dbh1 = new PDO("mysql:host=$ip;dbname=$r_db", "$user", "$pass");
     
 function make_players_array(){
 	global $dbh, $c_db, $pl_array, $maps_a;

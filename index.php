@@ -1,10 +1,10 @@
-﻿<?php
+﻿nstructions<?php
 
 // Configuration.
 // Realm database.
-$r_db = "realmd0";
+$r_db = "realmd";
 // IP (and port).
-$ip = "127.0.0.1:3306";
+$ip = "127.0.0.1";
 // Username.
 $user = "mangos";
 // Password.
@@ -18,7 +18,7 @@ $email_chars = "/^[^0-9][A-z0-9_]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_]+)*[
 $result;
 $realmip;
 //$con = @mysql_connect($ip, $user, $pass);
-$dbh = new PDO("mysql:host=127.0.0.1;dbname=realmd", "mangos", "mangos");
+$dbh = new PDO("mysql:host=$ip;dbname=$r_db", "$user", "$pass");
 if (!$dbh) {
 	$result = "> Unable to connect to database: " . mysql_error();
 }
@@ -463,14 +463,14 @@ Note: This is a simple account creation page for people who wish to make their s
 <div class="cols-col-50">
 <h4>Repack instructions</h4>
 <div class="mana-label">
-<a href="https://www.youtube.com/watch?v=dDQs1t5fZWo" class="my-btn">
+<!--a href="https://www.youtube.com/watch?v=dDQs1t5fZWo" class="my-btn">
 How to compile the Nostalrius Core on Windows
-</a>
+</a--!>
 <ol>
 <li>Start the MySQL database</li>
 <li>
 Change the realm IP to make it public:<br>
-Screenshots: <a href="tutorial.html" target="_blank">HeidiSQL</a> | <a href="images/tutorial/batch.png" target="_blank">Batch File</a> (Optional)<br>
+Screenshots: <a href="tutorial.html" target="_blank">HeidiSQL</a> <!--a href="images/tutorial/batch.png" target="_blank">Batch File</a--!> (Optional)<br>
 </li>
 <li>Start the login server (realmd.exe)</li>
 <li>Start the world server (mangosd.exe)</li>
